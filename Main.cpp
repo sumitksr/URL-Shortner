@@ -1,72 +1,80 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
-#include <random>
-
+#include <algorithm>
 using namespace std;
 
 class URLShortener {
 private:
-    unordered_map<string, string> shortToLong;
-    unordered_map<string, string> longToShort;
+    unordered_map<string, string> shortToLong; // Maps short URLs to long URLs
+    unordered_map<string, string> longToShort; // Maps long URLs to short URLs
     const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const int keyLength = 6;
+    int counter = 100; // Start counter at 100 for short keys
 
-    string generateRandomKey() {
-        string key;
-        random_device rd;
-        mt19937 generator(rd());
-        uniform_int_distribution<> dist(0, characters.size() - 1);
-
-        for (int i = 0; i < keyLength; ++i) {
-            key += characters[dist(generator)];
+    // Function to convert an integer to a fixed 5-character Base62 string
+    string encodeBase62(int num) {
+        string shortURL;
+        while (num) {
+            shortURL += characters[num % 62];
+            num /= 62;
         }
-        return key;
-    }
-
-public:
-    string shortenURL(const string& longURL) {
-        if (longToShort.find(longURL) != longToShort.end()) {
-            return longToShort[longURL];
+        reverse(shortURL.begin(), shortURL.end());
+        while (shortURL.length() < 5) {
+            shortURL = "a" + shortURL; // Pad with 'a' to ensure length 5
         }
-
-        string key;
-        do {
-            key = generateRandomKey();
-        } while (shortToLong.find(key) != shortToLong.end());
-
-        string shortURL = "http://short.url/" + key;
-        shortToLong[key] = longURL;
-        longToShort[longURL] = shortURL;
-
         return shortURL;
     }
 
-    string getOriginalURL(const string& shortURL) {
-        string key = shortURL.substr(shortURL.find_last_of('/') + 1);
-        if (shortToLong.find(key) != shortToLong.end()) {
-            return shortToLong[key];
+public:
+    // Function to shorten a given URL
+    string shortenURL(const string& longURL) {
+        if (longToShort.find(longURL) != longToShort.end()) {
+            return "short.url/" + longToShort[longURL]; // Return existing short URL
         }
-        return "URL not found!";
+
+        string shortKey = encodeBase62(++counter);
+        shortToLong[shortKey] = longURL;
+        longToShort[longURL] = shortKey;
+
+        return "short.url/" + shortKey;
+    }
+
+    // Function to retrieve the original URL
+    string retrieveURL(const string& shortURL) {
+        string key = shortURL.substr(11); // Extract short key after "short.url/"
+        return shortToLong.count(key) ? shortToLong[key] : "URL not found!";
     }
 };
 
 int main() {
     URLShortener urlShortener;
-    string longURL, shortURL;
+    int choice;
 
-    cout << "Enter a long URL to shorten: ";
-    getline(cin, longURL);
+    while (true) {
+        cout << "\n1. Shorten URL\n2. Retrieve URL\n3. Exit\nEnter your choice: ";
+        cin >> choice;
+        cin.ignore(); // Clear the input buffer
 
-    shortURL = urlShortener.shortenURL(longURL);
-    cout << "Shortened URL: " << shortURL << endl;
-
-    cout << "Enter the shortened URL to retrieve the original: ";
-    string inputShortURL;
-    getline(cin, inputShortURL);
-
-    string retrievedURL = urlShortener.getOriginalURL(inputShortURL);
-    cout << "Retrieved Original URL: " << retrievedURL << endl;
+        if (choice == 1) {
+            string longURL;
+            cout << "Enter the long URL: ";
+            getline(cin, longURL);
+            string shortURL = urlShortener.shortenURL(longURL);
+            cout << "Shortened URL: " << shortURL << endl;
+        } 
+        else if (choice == 2) {
+            string shortURL;
+            cout << "Enter the short URL: ";
+            getline(cin, shortURL);
+            cout << "Original URL: " << urlShortener.retrieveURL(shortURL) << endl;
+        } 
+        else if (choice == 3) {
+            break;
+        } 
+        else {
+            cout << "Invalid choice. Try again." << endl;
+        }
+    }
 
     return 0;
 }
