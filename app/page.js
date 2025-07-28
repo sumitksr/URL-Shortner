@@ -1,15 +1,27 @@
-"use client";
-import { useState } from "react";
-import Navbar from "@/components/Navbar";
+"use client"
+import { useState,useEffect, use } from "react";
 import { handleSubmit as submitHandler } from "@/handlers/submit";
-import { PacmanLoader } from "react-spinners";
+import { PacmanLoader } from "react-spinners"
 
 export default function Home() {
+  
   const [originalUrl, setOriginalUrl] = useState("");
   const [customShortUrl, setCustomShortUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+//   useEffect(() => {
+//   const wakeUpBackend = async () => {
+//     try {
+//       await fetch("https://your-backend-url.onrender.com/ping"); // or just "/"
+//       console.log("Backend woken up");
+//     } catch (error) {
+//       console.error("Error waking up backend:", error);
+//     }
+//   };
+
+//   wakeUpBackend();
+// }, []);
 
   async function onSubmit(e) {
     e.preventDefault();
