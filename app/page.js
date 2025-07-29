@@ -59,12 +59,12 @@ export default function Home() {
                 Original URL
               </label>
               <input
-                type="url"
+                type="text" 
                 id="originalUrl"
                 value={originalUrl}
                 onChange={(e) => setOriginalUrl(e.target.value)}
                 required
-                placeholder="https://example.com"
+                placeholder="example.com or https://example.com"
                 className="w-full p-3 bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
@@ -93,8 +93,13 @@ export default function Home() {
         {shortenedUrl && !loading && (
           <div className="mt-6 p-4 bg-green-900 rounded text-green-200 break-all">
             <p className="mb-1 font-semibold">Shortened URL:</p>
-            <a href={shortenedUrl} target="_blank" className="underline">
-              {shortenedUrl}
+            <a
+              href={`/${shortenedUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-blue-300 hover:text-blue-500"
+            >
+              {`${typeof window !== "undefined" ? window.location.origin : ""}/${shortenedUrl}`}
             </a>
           </div>
         )}
