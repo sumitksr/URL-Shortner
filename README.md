@@ -1,58 +1,78 @@
 # URL Shortener
-# first next js project
-This is a C++ implementation of a simple URL shortener. The program converts long URLs into shorter versions and retrieves the original URL when given a short one. It uses Base62 encoding and a hashmap for efficient mapping.
 
-## Features
+A full-stack URL shortener and data storage app built with **Next.js 15**, **MongoDB**, and **Tailwind CSS**. This was my **first Next.js project**, designed to shorten long URLs or store custom data behind a short URL.
 
-- **Efficient URL Shortening:** Generates unique short URLs using Base62 encoding.
-- **URL Retrieval:** Retrieves the original URL from a given short URL.
-- **In-Memory Storage:** Uses `unordered_map` for fast lookups.
-- **User-Friendly Interface:** Command-line based input for shortening and retrieving URLs.
+[🔗 Visit Live Demo](https://bitzipp.vercel.app)
 
-## Prerequisites
+## 🔧 Features
 
-- A C++ compiler (e.g., `g++`) that supports C++11 or later.
+* 🔗 **URL Shortening**: Convert long URLs into short, shareable links.
+* 📄 **Data Storage**: Save text or information under a short URL.
+* 🧪 **Custom Slugs**: Optionally set your own short alias.
+* 🔁 **Redirection or Display**:
 
-## How to Run
+  * If the type is `url`, it redirects.
+  * If the type is `data`, it displays the stored content.
+* 🌐 **MongoDB Atlas** for backend database.
+* 🎨 Dark-themed responsive UI with Tailwind CSS.
 
-1. **Clone the Repository:**
+
+
+## 🛠️ Tech Stack
+
+* **Frontend**: Next.js App Router (v15), React, Tailwind CSS
+* **Backend**: Next.js API Routes, MongoDB (via Atlas)
+* **Deployment**: Vercel (Frontend + Serverless backend)
+
+## 📁 Folder Structure
+
+```
+/app
+  /api/generate  → API route to create short links
+  /[url]         → Dynamic route to resolve short URLs
+/components      → Navbar, DataDisplay, etc.
+```
+
+## 🚀 Getting Started (Local Dev)
+
+1. **Clone the repository**:
 
    ```bash
    git clone https://github.com/sumitksr/URL-Shortner.git
    cd URL-Shortner
    ```
 
-2. **Compile the Code:**
+2. **Install dependencies**:
 
    ```bash
-   g++ main.cpp -o url_shortener
+   npm install
    ```
 
-3. **Run the Executable:**
+3. **Create `.env.local`**:
+
+   ```env
+   MONGODB_URI=your-mongodb-atlas-uri
+   ```
+
+4. **Run locally**:
 
    ```bash
-   ./url_shortener
+   npm run dev
    ```
 
-4. **Usage:**
-   - Enter `1` to shorten a URL.
-   - Enter `2` to retrieve the original URL.
-   - Enter `3` to exit the program.
+5. Visit `http://localhost:3000` in your browser.
 
-## Example Run
+## ✨ Example Use Cases
 
-```
-1. Shorten URL
-2. Retrieve URL
-3. Exit
-Enter your choice: 1
-Enter the long URL: https://www.example.com/very/long/url
-Shortened URL: short.url/abc12
+* `shorturl.com/abc123` → Redirects to long URL
+* `shorturl.com/data123` → Shows saved notes, code, or any text
 
-1. Shorten URL
-2. Retrieve URL
-3. Exit
-Enter your choice: 2
-Enter the short URL: short.url/abc12
-Original URL: https://www.example.com/very/long/url
-```
+## 📦 Deployment
+
+Deployed on [Vercel](https://vercel.com). MongoDB hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+
+---
+
+## 📬 Contact
+
+Made with ❤️ by [Sumit Kumar](https://github.com/sumitksr)
