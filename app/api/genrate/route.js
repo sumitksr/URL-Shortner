@@ -1,6 +1,11 @@
 import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
+// Helper to generate a random 6-character string
+function generateRandomShortUrl() {
+  return Math.random().toString(36).substring(2, 8);
+}
+
 export async function POST(request) {
   const body = await request.json();
   
@@ -22,6 +27,17 @@ export async function POST(request) {
   const db = client.db("shortner");
   const collection = db.collection("urls");
 
+  // When shorturl is not provided, generate one and ensure uniqueness
+  if (!body.shorturl || body.shorturl.trim() === "") {
+    let candidate, exists;
+    do {
+      candidate = generateRandomShortUrl();
+      exists = await collection.findOne({ shorturl: candidate });
+    } while (exists);
+    body.shorturl = candidate;
+  }
+  
+  // Check if provided shorturl already exists
   const doc = await collection.findOne({ shorturl: body.shorturl });
   if (doc) {
     return NextResponse.json(
@@ -30,14 +46,14 @@ export async function POST(request) {
     );
   }
   
-  const result = await collection.insertOne({
+  await collection.insertOne({
     url: body.url,
     shorturl: body.shorturl,
     createdAt: new Date(),
   });
 
   return NextResponse.json(
-    { message: "finished", success: true, data: result },
+    { message: "finished", success: true, data: { shortUrl: body.shorturl } },
     { status: 200 }
   );
 }
