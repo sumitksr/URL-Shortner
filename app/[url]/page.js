@@ -2,7 +2,9 @@ import clientPromise from "@/lib/mongodb";
 import { redirect } from "next/navigation";
 import DataDisplay from "@/components/DataDisplay";
 
-export default async function Page({ params }) {
+export default async function Page(route) {
+  // await the route object to unwrap params
+  const { params } = await route;
   const { url } = params;
 
   const client = await clientPromise;
@@ -13,7 +15,7 @@ export default async function Page({ params }) {
 
   if (!doc) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
         <h1 className="text-2xl">URL not found</h1>
       </div>
     );
@@ -23,6 +25,5 @@ export default async function Page({ params }) {
     redirect(doc.url);
   }
 
-  // If it's not a URL, render our client component with the saved data
   return <DataDisplay data={doc.data} />;
 }

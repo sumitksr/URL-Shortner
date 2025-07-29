@@ -1,90 +1,84 @@
 import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
-// Generate a random 6-character alphanumeric slug
 function generateRandomSlug() {
   return Math.random().toString(36).substring(2, 8);
 }
 
 export async function POST(request) {
-  const { type, url, data, shorturl: providedSlug } = await request.json();
+  try {
+    const { type, url, data, shorturl: providedSlug } = await request.json();
 
-  // 1️⃣ type is mandatory
-  if (type !== "url" && type !== "data") {
-    return NextResponse.json(
-      { error: 'Type is required ("url" or "data")' },
-      { status: 400 }
-    );
-  }
-
-  // 2️⃣ Validate based on type
-  if (type === "url") {
-    if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
-    }
-    if (!url.includes(".")) {
+    if (type !== "url" && type !== "data") {
       return NextResponse.json(
-        { error: "Invalid URL format" },
+        { error: 'Type is required ("url" or "data")' },
         { status: 400 }
       );
     }
-  } else { // data
-    if (!data) {
-      return NextResponse.json(
-        { error: "Data payload is required for type `data`" },
-        { status: 400 }
-      );
+
+    // Validate payload
+    if (type === "url") {
+      if (!url || !url.includes(".")) {
+        return NextResponse.json(
+          { error: "A valid URL is required" },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!data) {
+        return NextResponse.json(
+          { error: "Data payload is required for type `data`" },
+          { status: 400 }
+        );
+      }
     }
-  }
 
-  // 3️⃣ Connect to MongoDB
-  const client = await clientPromise;
-  const db = client.db("shortner");
-  const collection = db.collection("urls");
+    // Connect & choose collection
+    const client = await clientPromise;
+    const db = client.db("shortner");
+    const collection = db.collection("urls");
 
-  // 4️⃣ Generate or verify uniqueness of slug
-  let slug = providedSlug?.trim();
-  if (!slug) {
-    do {
-      slug = generateRandomSlug();
-    } while (await collection.findOne({ shorturl: slug }));
-  } else {
-    const exists = await collection.findOne({ shorturl: slug });
-    if (exists) {
-      return NextResponse.json(
-        { error: "Short URL already exists", success: false },
-        { status: 400 }
-      );
+    // Generate or check slug uniqueness
+    let slug = providedSlug?.trim();
+    if (!slug) {
+      do {
+        slug = generateRandomSlug();
+      } while (await collection.findOne({ shorturl: slug }));
+    } else {
+      if (await collection.findOne({ shorturl: slug })) {
+        return NextResponse.json(
+          { error: "Short URL already exists" },
+          { status: 400 }
+        );
+      }
     }
-  }
 
-  // 5️⃣ Build the document
-  const doc = {
-    type,
-    shorturl: slug,
-    createdAt: new Date(),
-  };
+    // Build document
+    const doc = {
+      type,
+      shorturl: slug,
+      createdAt: new Date(),
+    };
 
-  if (type === "url") {
-    // Prepend protocol if missing
-    const normalizedUrl =
-      url.startsWith("http://") || url.startsWith("https://")
+    if (type === "url") {
+      doc.url = url.startsWith("http")
         ? url
         : `http://${url}`;
-    doc.url = normalizedUrl;
-  } else {
-    doc.data = data;
+    } else {
+      doc.data = data;
+    }
+
+    await collection.insertOne(doc);
+
+    return NextResponse.json(
+      { message: "finished", success: true, data: { shortUrl: slug } },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error("🔥 [generate] error:", err);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
-
-  // 6️⃣ Insert and respond
-  await collection.insertOne(doc);
-
-  return NextResponse.json(
-    {
-      message: "finished",
-      success: true,
-      data: { shortUrl: slug },
-    },
-    { status: 200 }
-  );
 }
