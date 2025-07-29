@@ -1,27 +1,27 @@
-"use client"
-import { useState,useEffect, use } from "react";
+"use client";
+import { useState, useEffect, use } from "react";
 import { handleSubmit as submitHandler } from "@/handlers/submit";
-import { PacmanLoader } from "react-spinners"
+import { PacmanLoader } from "react-spinners";
 
 export default function Home() {
-  
   const [originalUrl, setOriginalUrl] = useState("");
   const [customShortUrl, setCustomShortUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-//   useEffect(() => {
-//   const wakeUpBackend = async () => {
-//     try {
-//       await fetch("https://your-backend-url.onrender.com/ping"); // or just "/"
-//       console.log("Backend woken up");
-//     } catch (error) {
-//       console.error("Error waking up backend:", error);
-//     }
-//   };
+  const [type, setType] = useState("url");
+  //   useEffect(() => {
+  //   const wakeUpBackend = async () => {
+  //     try {
+  //       await fetch("https://your-backend-url.onrender.com/ping"); // or just "/"
+  //       console.log("Backend woken up");
+  //     } catch (error) {
+  //       console.error("Error waking up backend:", error);
+  //     }
+  //   };
 
-//   wakeUpBackend();
-// }, []);
+  //   wakeUpBackend();
+  // }, []);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -30,7 +30,7 @@ export default function Home() {
     setShortenedUrl("");
 
     try {
-      const res = await submitHandler(e, originalUrl, customShortUrl);
+      const res = await submitHandler(e, originalUrl, customShortUrl,type);
       if (res.success) {
         setShortenedUrl(res.data.shortUrl);
       } else {
@@ -46,7 +46,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white px-6 py-10">
       <div className="max-w-xl mx-auto bg-gray-900 p-8 rounded-xl shadow-xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Shorten your URL</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Shorten your URL
+        </h1>
 
         {loading ? (
           <div className="flex justify-center py-10">
@@ -59,7 +61,7 @@ export default function Home() {
                 Original URL
               </label>
               <input
-                type="text" 
+                type="text"
                 id="originalUrl"
                 value={originalUrl}
                 onChange={(e) => setOriginalUrl(e.target.value)}
@@ -69,7 +71,10 @@ export default function Home() {
               />
             </div>
             <div>
-              <label htmlFor="customShortUrl" className="block mb-2 font-medium">
+              <label
+                htmlFor="customShortUrl"
+                className="block mb-2 font-medium"
+              >
                 Custom Short URL
               </label>
               <input
@@ -81,6 +86,22 @@ export default function Home() {
                 className="w-full p-3 bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring focus:ring-blue-500"
               />
             </div>
+            <div>
+              <label htmlFor="type" className="block mb-2 font-medium">
+                Type
+              </label>
+              <select
+                id="type"
+                name="type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="w-full p-3 bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring focus:ring-blue-500"
+              >
+                <option value="url">URL</option>
+                <option value="data">Data</option>
+              </select>
+            </div>
+
             <button
               type="submit"
               className="w-full bg-blue-600 text-white px-4 py-3 rounded font-semibold hover:bg-blue-700 transition"
@@ -99,7 +120,9 @@ export default function Home() {
               rel="noopener noreferrer"
               className="underline text-blue-300 hover:text-blue-500"
             >
-              {`${typeof window !== "undefined" ? window.location.origin : ""}/${shortenedUrl}`}
+              {`${
+                typeof window !== "undefined" ? window.location.origin : ""
+              }/${shortenedUrl}`}
             </a>
           </div>
         )}

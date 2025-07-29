@@ -1,6 +1,6 @@
 import clientPromise from "@/lib/mongodb";
 import { redirect } from "next/navigation";
-
+import DataDisplay from "@/components/DataDisplay";
 
 export default async function Page({ params }) {
   const { url } = params;
@@ -11,13 +11,18 @@ export default async function Page({ params }) {
 
   const doc = await collection.findOne({ shorturl: url });
 
-  if (doc && doc.url) {
+  if (!doc) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+        <h1 className="text-2xl">URL not found</h1>
+      </div>
+    );
+  }
+
+  if (doc.type === "url") {
     redirect(doc.url);
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center text-white bg-black">
-      <h1 className="text-2xl">URL not found</h1>
-    </div>
-  );
+  // If it's not a URL, render our client component with the saved data
+  return <DataDisplay data={doc.data} />;
 }
