@@ -9,11 +9,11 @@ const Contact = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4">
       <h1 className="text-4xl font-bold mb-4 text-center">Contact Me</h1>
       <p className="text-lg text-gray-300 mb-8 text-center">
-        I'm open to collaborations, projects, or just a good tech talk.<br />
+        I&apos;m open to collaborations, projects, or just a good tech talk.<br />
         <span className="flex items-center justify-center mt-2 gap-2">
           <MdEmail className="text-xl" />
           <a
-            href="sumitksr4156@gmail.com"
+            href="mailto:sumitksr4156@gmail.com"
             className="underline text-blue-400 hover:text-blue-500"
           >
             sumitksr4156@gmail.com
