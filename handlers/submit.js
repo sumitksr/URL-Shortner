@@ -1,23 +1,23 @@
-export async function handleSubmit(e, originalUrl, customShortUrl) {
-  e.preventDefault();
-  
-  try {
-    const response = await fetch('/api/genrate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: originalUrl,
-        shorturl: customShortUrl,
-      }),
-    });
-    
-    const data = await response.json();
-    console.log("Response data:", data);
-    return data;
-  } catch (error) {
-    console.error("Error submitting URL:", error);
-    throw error;
+export async function handleSubmit(originalUrl, customShortUrl, type) {
+  // Build the payload exactly how the API expects it
+  const payload = {
+    type,                    // "url" or "data"
+    shorturl: customShortUrl || "",
+  };
+
+  if (type === "url") {
+    payload.url = originalUrl;
+  } else {
+    payload.data = originalUrl;
   }
+
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json();
+  console.log("Response data:", json);
+  return json;
 }
