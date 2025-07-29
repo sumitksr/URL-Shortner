@@ -1,4 +1,4 @@
-export const runtime = "nodejs"; 
+
 
 import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
@@ -11,7 +11,29 @@ export async function POST(request) {
   try {
     const { type, url, data, shorturl: providedSlug } = await request.json();
 
-    // Validations (same as before)…
+    if (type !== "url" && type !== "data") {
+      return NextResponse.json(
+        { error: 'Type is required ("url" or "data")' },
+        { status: 400 }
+      );
+    }
+
+    // Validate payload
+    if (type === "url") {
+      if (!url || !url.includes(".")) {
+        return NextResponse.json(
+          { error: "A valid URL is required" },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!data) {
+        return NextResponse.json(
+          { error: "Data payload is required for type `data`" },
+          { status: 400 }
+        );
+      }
+    }
 
     const client = await clientPromise;
     const db = client.db("shortner");
