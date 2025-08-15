@@ -25,9 +25,5 @@ export default async function Page(route) {
     redirect(doc.url);
   }
 
-  if (doc.type === "file") {
-    redirect(`/file-download/${url}`);
-  }
-
   return <DataDisplay data={doc.data} />;
 }

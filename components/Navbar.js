@@ -10,9 +10,6 @@ export default function Navbar() {
           <Link href="/">
             <li className="hover:text-gray-300 cursor-pointer">Home</li>
           </Link>
-          <Link href="/file">
-            <li className="hover:text-gray-300 cursor-pointer">File Upload</li>
-          </Link>
           <Link href="/contact">
             <li className="hover:text-gray-300 cursor-pointer">Contact us</li>
           </Link>
