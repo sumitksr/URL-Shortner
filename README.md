@@ -162,54 +162,11 @@ A comprehensive full-stack platform built with **Next.js 15**, **MongoDB**, **Cl
 - View, edit, and delete shortened URLs
 - Analytics and usage tracking
 
-## � Deploymment
-
-### Vercel Deployment (Recommended)
-
-1. **Fork/Clone** this repository to your GitHub account
-
-2. **Connect to Vercel**:
-
-   - Go to [Vercel](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel will auto-detect Next.js settings
-
-3. **Environment Variables** - Add these in Vercel dashboard:
-
-   ```env
-   MONGODB_URI=your-mongodb-atlas-uri
-   CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
-   CLOUDINARY_API_KEY=your-cloudinary-api-key
-   CLOUDINARY_API_SECRET=your-cloudinary-api-secret
-   API_KEY=your-secret-admin-key
-   NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
-   ```
-
-4. **Deploy**: Vercel will automatically build and deploy your app
-
 ### Database & Storage Setup
 
 - **MongoDB**: Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (free tier available)
 - **File Storage**: [Cloudinary](https://cloudinary.com) (free tier: 25GB storage, 25GB bandwidth)
 
-## 🎨 Features Showcase
-
-### Beautiful Animations
-
-- Smooth fade-in and slide-up animations
-- Bounce effects for success messages
-- Shake animations for errors
-- Gradient backgrounds with glass-morphism
-- Hover effects and micro-interactions
-
-### Responsive Design
-
-- Mobile-first approach
-- Tablet and desktop optimized
-- Touch-friendly interfaces
-- Adaptive layouts
-
----
 
 ## 📬 Contact
 
@@ -252,10 +209,6 @@ Made with ❤️ by [Sumit Kumar](https://github.com/sumitksr)
 3. Commit your changes: `git commit -m 'Add amazing feature'`
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
