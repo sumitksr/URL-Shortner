@@ -3,7 +3,7 @@ import URLList from '@/components/URLList';
 export const dynamic = 'force-dynamic';
 
 export default async function Page({ params }) {
-  const { key } = params;
+  const { key } = await params;
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/get/${encodeURIComponent(key)}`,
     { cache: 'no-store' }

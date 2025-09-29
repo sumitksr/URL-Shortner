@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
   try {
-    const { key } = params;
+    const { key } = await params;
     
     const client = await clientPromise;
     const collection = client.db("shortner").collection("urls");

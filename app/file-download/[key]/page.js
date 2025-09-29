@@ -7,14 +7,25 @@ export default function FileDownload({ params }) {
   const [fileData, setFileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [resolvedParams, setResolvedParams] = useState(null);
 
   useEffect(() => {
+    const resolveParams = async () => {
+      const resolved = await params;
+      setResolvedParams(resolved);
+    };
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!resolvedParams) return;
+    
     const fetchFileData = async () => {
       try {
-        const response = await fetch(`/api/url/${params.key}`);
+        const response = await fetch(`/api/url/${resolvedParams.key}`);
         const result = await response.json();
 
-        if (response.ok && result.type === 'file') {
+        if (response.ok && result.type === "file") {
           setFileData(result);
         } else {
           setError("File not found or invalid link");
@@ -27,13 +38,13 @@ export default function FileDownload({ params }) {
     };
 
     fetchFileData();
-  }, [params.key]);
+  }, [resolvedParams]);
 
   const handleDownload = () => {
     if (fileData && fileData.url) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = fileData.url;
-      link.download = fileData.fileName || 'download';
+      link.download = fileData.fileName || "download";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -76,30 +87,44 @@ export default function FileDownload({ params }) {
         <div className="text-center mb-8">
           <div className="text-green-400 text-6xl mb-4">📁</div>
           <h1 className="text-3xl font-bold mb-2">File Ready for Download</h1>
-          <p className="text-gray-400">Click the download button below to get your file</p>
+          <p className="text-gray-400">
+            Click the download button below to get your file
+          </p>
         </div>
 
         {/* File Information */}
         <div className="bg-gray-800 p-6 rounded-lg mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">File Name</h3>
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                File Name
+              </h3>
               <p className="text-white break-all">{fileData.fileName}</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">File Size</h3>
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                File Size
+              </h3>
               <p className="text-white">
-                {fileData.fileSize ? `${(fileData.fileSize / 1024 / 1024).toFixed(2)} MB` : 'Unknown'}
+                {fileData.fileSize
+                  ? `${(fileData.fileSize / 1024 / 1024).toFixed(2)} MB`
+                  : "Unknown"}
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">Upload Date</h3>
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                Upload Date
+              </h3>
               <p className="text-white">
-                {fileData.createdAt ? new Date(fileData.createdAt).toLocaleDateString() : 'Unknown'}
+                {fileData.createdAt
+                  ? new Date(fileData.createdAt).toLocaleDateString()
+                  : "Unknown"}
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">File Type</h3>
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                File Type
+              </h3>
               <p className="text-white capitalize">{fileData.type}</p>
             </div>
           </div>
@@ -117,7 +142,9 @@ export default function FileDownload({ params }) {
 
         {/* Direct Link */}
         <div className="bg-blue-900 p-4 rounded-lg mb-6">
-          <h3 className="text-lg font-semibold text-blue-200 mb-2">Direct Download Link</h3>
+          <h3 className="text-lg font-semibold text-blue-200 mb-2">
+            Direct Download Link
+          </h3>
           <a
             href={fileData.url}
             target="_blank"
@@ -130,10 +157,7 @@ export default function FileDownload({ params }) {
 
         {/* Back to Home */}
         <div className="text-center">
-          <Link
-            href="/"
-            className="text-gray-400 hover:text-white transition"
-          >
+          <Link href="/" className="text-gray-400 hover:text-white transition">
             ← Back to Home
           </Link>
         </div>

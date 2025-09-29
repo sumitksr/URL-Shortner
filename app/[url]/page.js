@@ -1,11 +1,10 @@
 import clientPromise from "@/lib/mongodb";
 import { redirect } from "next/navigation";
 import DataDisplay from "@/components/DataDisplay";
+import FileDisplay from "@/components/FileDisplay";
 
-export default async function Page(route) {
-  // await the route object to unwrap params
-  const { params } = await route;
-  const { url } = params;
+export default async function Page({ params }) {
+  const { url } = await params;
 
   const client = await clientPromise;
   const db = client.db("shortner");
@@ -23,6 +22,23 @@ export default async function Page(route) {
 
   if (doc.type === "url") {
     redirect(doc.url);
+  }
+
+  if (doc.type === "file") {
+    // Convert MongoDB document to plain object for client component
+    const fileData = {
+      fileName: doc.fileName,
+      fileSize: doc.fileSize,
+      fileType: doc.fileType,
+      cloudinaryUrl: doc.cloudinaryUrl,
+      shortUrl: doc.shorturl,
+      createdAt: doc.createdAt.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+    };
+    return <FileDisplay fileData={fileData} />;
   }
 
   return <DataDisplay data={doc.data} />;

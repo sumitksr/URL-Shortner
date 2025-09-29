@@ -10,9 +10,7 @@ export default function DataDisplay({ data }) {
       await navigator.clipboard.writeText(data);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      
-    }
+    } catch {}
   };
 
   return (
@@ -21,7 +19,7 @@ export default function DataDisplay({ data }) {
       <textarea
         readOnly
         value={data}
-        className="w-full max-w-2xl h-64 bg-gray-800 border border-gray-600 rounded p-3 text-white resize-none"
+        className="w-full max-w-5xl h-screen bg-gray-800 border border-gray-600 rounded p-4 text-white resize-none font-mono text-sm"
       />
       <button
         onClick={handleCopy}
